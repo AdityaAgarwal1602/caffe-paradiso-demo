@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caffe Paradiso — Dreamers Welcome</title>
+<meta name="description" content="Caffe Paradiso, an espresso bar at 202 Elizabeth Street, Nolita, from the team behind Dante. 8am–6pm all day, everyday.">
+<link rel="icon" href="../assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tq:#16b5b0;
+    --tq-deep:#0a7c7a;
+    --tq-ice:#d8f3f1;
+    --ink:#14213d;
+    --cream:#f7f4ec;
+    --paper:#fffdf8;
+    --berry:#e2343f;
+    --onyx:#5f8f6a;
+    --matcha:#8bb54a;
+    --display:"Bricolage Grotesque",system-ui,sans-serif;
+    --serif:"Instrument Serif",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:var(--display);font-size:17px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  .wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+  em,.serif{font-family:var(--serif);font-style:italic;font-weight:400}
+
+  /* ---------- scroll progress + cursor ---------- */
+  .progress{position:fixed;top:0;left:0;height:5px;width:100%;z-index:60;transform-origin:0 50%;transform:scaleX(0);background:repeating-linear-gradient(90deg,var(--tq) 0 14px,var(--berry) 14px 28px)}
+  .cursor{position:fixed;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid var(--paper);border-radius:50%;pointer-events:none;z-index:9998;mix-blend-mode:difference;transition:width .3s,height .3s,margin .3s,background .3s,opacity .3s;opacity:0}
+  .cursor.on{opacity:1}
+  .cursor.big{width:78px;height:78px;margin:-39px 0 0 -39px;background:var(--paper)}
+
+  /* ---------- awning ---------- */
+  .awning{
+    height:64px;
+    background:repeating-linear-gradient(90deg,var(--tq) 0 40px,var(--paper) 40px 80px);
+    -webkit-mask:radial-gradient(circle 20px at 20px 44px,#000 97%,#0000) 0 0/40px 64px repeat-x,linear-gradient(#000 0 0) 0 0/100% 44px no-repeat;
+            mask:radial-gradient(circle 20px at 20px 44px,#000 97%,#0000) 0 0/40px 64px repeat-x,linear-gradient(#000 0 0) 0 0/100% 44px no-repeat;
+    position:relative;z-index:3;
+    transform-origin:top;animation:sway 6s ease-in-out infinite;
+  }
+  @keyframes sway{50%{transform:scaleY(1.08)}}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:50;background:rgba(247,244,236,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(20,33,61,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;letter-spacing:-.02em}
+  .brand img{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--ink);transition:transform .6s}
+  .brand:hover img{transform:rotate(-360deg)}
+  .links{display:flex;gap:28px;list-style:none;font-size:15px}
+  .links a{text-decoration:none;position:relative}
+  .links a::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:2px;background:var(--tq);transition:right .35s cubic-bezier(.7,0,.2,1)}
+  .links a:hover::after,.links a.active::after{right:0}
+  .status{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px;background:var(--ink);color:var(--paper);white-space:nowrap}
+  .status i{width:8px;height:8px;border-radius:50%;background:var(--matcha);animation:ping 2s infinite}
+  .status.closed i{background:var(--berry);animation:none}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(139,181,74,.7)}80%,100%{box-shadow:0 0 0 9px rgba(139,181,74,0)}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:56px 0 90px;overflow:hidden;--mx:0;--my:0}
+  .hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--tq-deep)}
+  .eyebrow::before{content:"";width:34px;height:2px;background:currentColor}
+  h1{font-size:clamp(60px,10.5vw,166px);line-height:.86;letter-spacing:-.055em;font-weight:800;margin:22px 0 28px}
+  h1 .line{display:block;overflow:hidden;padding:0 .12em .08em 0}
+  h1 .line>span{display:inline-block;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.8,.1,1) forwards}
+  h1 .line:nth-child(2)>span{animation-delay:.12s}
+  #rot{display:inline-block;transition:transform .55s cubic-bezier(.7,0,.2,1),opacity .55s}
+  #rot.out{transform:translateY(-110%);opacity:0}
+  #rot.in{transform:translateY(110%);opacity:0;transition:none}
+  h1 em{color:var(--tq);letter-spacing:-.02em;font-size:1.05em}
+  @keyframes rise{to{transform:none}}
+  .lede{max-width:460px;font-size:19px;color:#3a4560}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:99px;font-weight:600;text-decoration:none;font-size:15px;transition:transform .3s cubic-bezier(.2,.8,.1,1),background .25s,color .25s;will-change:transform}
+  .btn.solid{background:var(--ink);color:var(--paper)}
+  .btn.solid:hover{background:var(--tq)}
+  .btn.ghost{border:1.5px solid var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn svg{width:16px;height:16px;transition:transform .3s}
+  .btn:hover svg{transform:translateX(4px)}
+
+  .stage{position:relative;justify-self:center;width:min(440px,100%)}
+  .arch{aspect-ratio:3/4;border-radius:999px 999px 28px 28px;overflow:hidden;border:2px solid var(--ink);box-shadow:16px 16px 0 var(--tq);background:var(--tq-ice);transform:translate(calc(var(--mx)*-12px),calc(var(--my)*-12px)) rotate(2deg);transition:transform .4s ease-out}
+  .arch img{width:100%;height:100%;object-fit:cover;transform:scale(1.12) translate(calc(var(--mx)*10px),calc(var(--my)*10px));transition:transform .4s ease-out}
+  .seal{position:absolute;left:-58px;bottom:36px;width:170px;height:170px;display:grid;place-items:center;transform:translate(calc(var(--mx)*26px),calc(var(--my)*26px));transition:transform .4s ease-out;cursor:pointer}
+  .seal svg.ring{position:absolute;inset:0;animation:spin 22s linear infinite}
+  .seal:hover svg.ring{animation-duration:5s}
+  .seal svg.ring text{font:600 11.5px var(--display);letter-spacing:.32em;fill:var(--ink);text-transform:uppercase}
+  .seal img{width:96px;height:96px;border-radius:50%;border:2px solid var(--ink);background:#fff}
+  .seal::before{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink)}
+  .seal>*{position:relative}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sticker{position:absolute;right:-18px;top:44px;background:var(--berry);color:#fff;font-weight:700;font-size:13px;padding:12px 16px;border-radius:14px;box-shadow:4px 4px 0 var(--ink);line-height:1.2;text-align:center;transform:translate(calc(var(--mx)*18px),calc(var(--my)*18px)) rotate(8deg);transition:transform .4s ease-out;animation:bob 4s ease-in-out infinite}
+  .sticker b{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:24px}
+  @keyframes bob{50%{margin-top:-8px}}
+
+  .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;z-index:-1;transition:transform .8s ease-out}
+  .blob.a{width:420px;height:420px;background:var(--tq);right:-120px;top:-80px;transform:translate(calc(var(--mx)*40px),calc(var(--my)*40px))}
+  .blob.b{width:280px;height:280px;background:#ffd0d4;left:30%;bottom:-120px;transform:translate(calc(var(--mx)*-50px),calc(var(--my)*-30px))}
+
+  /* ---------- marquee ---------- */
+  .marquee{background:var(--tq);color:var(--paper);border-block:2px solid var(--ink);overflow:hidden;transform:rotate(-1.6deg);margin:0 -20px;position:relative;z-index:2}
+  .marquee.alt{background:var(--ink);transform:rotate(1.4deg);margin-top:-46px;z-index:1}
+  .track{display:flex;width:max-content;will-change:transform}
+  .track span{font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.02em;padding:14px 0;white-space:nowrap;display:flex;align-items:center}
+  .track span::after{content:"✦";margin:0 28px;font-size:.7em}
+  .track em{margin-left:.25em}
+
+  /* ---------- manifesto ---------- */
+  section{position:relative}
+  .manifesto{padding:150px 0 110px}
+  .manifesto .kicker{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--tq-deep);margin-bottom:26px;display:block}
+  .manifesto p.big{font-size:clamp(32px,5vw,72px);line-height:1.06;letter-spacing:-.04em;font-weight:600;max-width:1120px}
+  .manifesto .w{color:rgba(20,33,61,.16);transition:color .35s}
+  .manifesto .w.on{color:var(--ink)}
+  .manifesto em .w.on{color:var(--tq-deep)}
+  .pill{display:inline-block;vertical-align:middle;width:1.9em;height:.92em;border-radius:99px;overflow:hidden;border:2px solid var(--ink);margin:0 .08em;transform:translateY(-.05em) scale(.6);opacity:.3;transition:transform .5s cubic-bezier(.2,.8,.1,1),opacity .5s}
+  .pill.on{transform:translateY(-.05em);opacity:1}
+  .pill img{width:100%;height:100%;object-fit:cover}
+  .sign-off{margin-top:46px;display:flex;align-items:center;gap:14px;font-size:15px;color:#4a5570}
+  .sign-off svg{width:46px;height:46px;flex:none}
+  .sign-off svg path{stroke-dasharray:700;stroke-dashoffset:700;transition:stroke-dashoffset 2.4s ease}
+  .sign-off.in svg path{stroke-dashoffset:0}
+
+  /* ---------- ritual ---------- */
+  .ritual{padding:20px 0 130px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:s}
+  .step{background:var(--paper);border:2px solid var(--ink);border-radius:26px;padding:30px 28px 34px;position:relative;overflow:hidden;isolation:isolate;transition:transform .45s cubic-bezier(.2,.8,.1,1),box-shadow .45s}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:var(--serif);font-style:italic;font-size:64px;line-height:1;color:var(--tq);display:block;margin-bottom:28px;transition:color .4s}
+  .step::after{content:"";position:absolute;inset:0;background:var(--ink);clip-path:circle(0 at var(--x,50%) var(--y,50%));transition:clip-path .6s cubic-bezier(.7,0,.2,1);z-index:-1}
+  .step:hover{transform:translateY(-8px);box-shadow:8px 10px 0 var(--tq)}
+  .step:hover::after{clip-path:circle(150% at var(--x,50%) var(--y,50%))}
+  .step:hover,.step:hover p{color:var(--paper)}
+  .step h3{font-size:28px;letter-spacing:-.03em;line-height:1.05;margin-bottom:10px}
+  .step p{color:#4a5570;transition:color .4s}
+
+  /* ---------- menu ---------- */
+  .menu{padding:40px 0 130px}
+  .head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:44px}
+  h2{font-size:clamp(46px,7vw,104px);line-height:.92;letter-spacing:-.05em;font-weight:800}
+  h2 em{color:var(--tq);letter-spacing:-.02em}
+  .tabs{display:flex;gap:6px;background:var(--paper);padding:6px;border-radius:99px;border:1.5px solid var(--ink);position:relative}
+  .tabs .glide{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:99px;background:var(--ink);transition:left .45s cubic-bezier(.7,0,.2,1),width .45s cubic-bezier(.7,0,.2,1)}
+  .tabs button{font:600 14px var(--display);border:0;background:none;padding:10px 18px;border-radius:99px;cursor:pointer;color:var(--ink);position:relative;z-index:1;transition:color .35s}
+  .tabs button[aria-selected="true"]{color:var(--paper)}
+  .menu-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:start}
+  .feature{position:sticky;top:96px;border-radius:28px;overflow:hidden;border:2px solid var(--ink);background:var(--ink);color:var(--paper);box-shadow:-12px 12px 0 var(--berry);transition:box-shadow .5s}
+  .feature .img{position:relative;aspect-ratio:4/4.4;overflow:hidden}
+  .feature img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s,transform 1.2s}
+  .feature img.fade{opacity:0;transform:scale(1.08)}
+  .feature .cap{padding:22px 24px 26px;display:flex;justify-content:space-between;gap:16px;align-items:end}
+  .feature h3{font-size:30px;letter-spacing:-.03em;line-height:1.05;transition:opacity .3s}
+  .feature h3.fade{opacity:0}
+  .feature small{font-size:13px;opacity:.7}
+  .tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--matcha);color:var(--ink);padding:6px 10px;border-radius:8px;white-space:nowrap}
+  .list{list-style:none;border-top:2px solid var(--ink)}
+  .list[hidden]{display:none}
+  .list li{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;padding:22px 14px;border-bottom:1.5px solid rgba(20,33,61,.18);position:relative;isolation:isolate;cursor:default;transition:color .3s,padding .3s;animation:in .5s both}
+  .list li:nth-child(2){animation-delay:.05s}.list li:nth-child(3){animation-delay:.1s}.list li:nth-child(4){animation-delay:.15s}.list li:nth-child(5){animation-delay:.2s}
+  @keyframes in{from{opacity:0;transform:translateX(24px)}}
+  .list li::before{content:"";position:absolute;inset:0;background:var(--tq);transform:scaleY(0);transform-origin:bottom;transition:transform .35s cubic-bezier(.7,0,.2,1);z-index:-1}
+  .list li:hover{color:var(--paper);padding-left:24px}
+  .list li:hover::before{transform:scaleY(1)}
+  .list .n{font-family:var(--serif);font-style:italic;font-size:18px;opacity:.6}
+  .list h4{font-size:24px;letter-spacing:-.03em;font-weight:700;line-height:1.1}
+  .list p{font-size:14px;opacity:.75;margin-top:4px}
+  .list .price{font-weight:700;font-size:19px}
+  .note{font-size:13px;color:#5d6780;margin-top:18px}
+
+  /* ---------- gallery ---------- */
+  .gallery{background:var(--ink);color:var(--paper);padding:120px 0 130px;overflow:hidden}
+  .gallery .head p{max-width:340px;color:rgba(255,253,248,.7)}
+  .strip{display:flex;gap:26px;padding:30px 16px 40px;overflow-x:auto;scrollbar-width:none;cursor:grab;user-select:none}
+  .strip.drag{cursor:grabbing}
+  .strip::-webkit-scrollbar{display:none}
+  .strip img{pointer-events:none}
+  .card{flex:0 0 clamp(240px,28vw,330px);margin:0;--r:-3deg;--ty:0px;--rx:0deg;--ry:0deg}
+  .card:nth-child(even){--r:2.5deg;--ty:28px}
+  .card .ph{aspect-ratio:3/4.3;border-radius:22px;overflow:hidden;border:2px solid var(--paper);transform:perspective(900px) translateY(var(--ty)) rotate(var(--r)) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .5s cubic-bezier(.2,.8,.1,1)}
+  .card:hover{--r:0deg}
+  .card img{width:100%;height:100%;object-fit:cover;transform:scale(1.05)}
+  .card figcaption{margin-top:20px;font-size:14px;color:rgba(255,253,248,.7);display:flex;gap:10px}
+  .card:nth-child(even) figcaption{margin-top:48px}
+  .card figcaption b{color:var(--tq);font-family:var(--serif);font-style:italic;font-weight:400;font-size:18px}
+  .card.quote .ph{background:var(--tq);color:var(--ink);padding:30px;display:flex;flex-direction:column;justify-content:space-between;border-color:var(--tq)}
+  .card.quote p{font-family:var(--serif);font-style:italic;font-size:clamp(30px,3vw,38px);line-height:1.05}
+  .card.quote small{font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .hint{font-size:13px;color:rgba(255,253,248,.5);text-align:center;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ---------- visit ---------- */
+  .visit{padding:130px 0 120px}
+  .visit .wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+  .big-hours{font-size:clamp(110px,19vw,280px);font-weight:800;letter-spacing:-.07em;line-height:.8;display:flex;align-items:center;gap:.04em}
+  .big-hours .dash{width:.5em;height:.1em;background:var(--tq);border-radius:99px;display:inline-block;margin:0 .06em;position:relative;overflow:hidden}
+  .big-hours .dash i{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(var(--day,0))}
+  .big-hours sup{font-size:.18em;letter-spacing:0;font-weight:600;align-self:flex-start;margin-top:.5em}
+  .hours-sub{font-family:var(--serif);font-style:italic;font-size:clamp(30px,3.6vw,46px);color:var(--tq-deep);margin-top:16px}
+  .day-note{font-size:14px;color:#5d6780;margin-top:10px}
+  .info{background:var(--paper);border:2px solid var(--ink);border-radius:28px;padding:34px;box-shadow:12px 12px 0 var(--ink)}
+  .info dl{display:grid;gap:22px}
+  .info dt{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tq-deep)}
+  .info dd{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.25;margin-top:4px}
+  .info dd small{display:block;font-size:15px;font-weight:400;color:#5d6780;margin-top:4px;letter-spacing:0}
+  .info .btn{margin-top:28px;width:100%;justify-content:center}
+  .clock{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--tq);color:var(--ink);overflow:hidden}
+  footer .awning{background:repeating-linear-gradient(90deg,var(--cream) 0 40px,var(--tq) 40px 80px);animation:none}
+  .word{font-size:clamp(70px,17vw,260px);font-weight:800;letter-spacing:-.07em;line-height:.85;text-align:center;color:transparent;-webkit-text-stroke:2px var(--ink);margin:40px 0 0;user-select:none;white-space:nowrap}
+  .word span{display:inline-block;transition:color .3s,transform .3s}
+  .word span:hover{color:var(--ink);transform:translateY(-.08em)}
+  .word em{-webkit-text-stroke:0;color:var(--paper);letter-spacing:-.02em;display:inline-block;animation:beat 1.6s ease-in-out infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+  .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:40px 0 26px;font-size:15px;font-weight:500}
+  .foot a{text-decoration:none;border-bottom:1.5px solid}
+  .disclaimer{background:var(--ink);color:var(--paper);text-align:center;padding:18px 16px;font-size:14px;line-height:1.5}
+  .disclaimer b{color:var(--tq)}
+
+  /* ---------- hearts ---------- */
+  .pop{position:fixed;pointer-events:none;z-index:9997;font-size:18px;line-height:1}
+
+  /* ---------- reveal ---------- */
+  .rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.1,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .links{display:none}
+    .hero .wrap,.menu-grid,.visit .wrap{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .stage{margin-top:30px;width:min(340px,82%)}
+    .seal{left:-40px;width:130px;height:130px}
+    .seal img{width:70px;height:70px}
+    .seal svg.ring text{font-size:9.5px}
+    .feature{position:relative;top:0}
+    .manifesto{padding:110px 0 80px}
+  }
+  @media (max-width:520px){
+    .status span{display:none}
+    .sticker{right:-6px}
+    .info{padding:24px}
+    .list li{grid-template-columns:1fr auto;gap:10px}
+    .list .n{display:none}
+    .tabs button{padding:9px 12px;font-size:13px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    h1 .line>span{transform:none}
+    .rv{opacity:1;transform:none}
+    .sign-off svg path{stroke-dashoffset:0}
+  }
+
+  /* ---------- demo switcher (shared look, isolated copy) ---------- */
+  .demo-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .demo-tab>button{writing-mode:vertical-rl;transform:rotate(180deg);background:#111;color:#fff;border:0;padding:16px 10px;border-radius:0 10px 10px 0;font:700 12px/1 system-ui,sans-serif;letter-spacing:.28em;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+  .demo-tab>button:hover{background:#333}
+  .demo-panel{position:absolute;right:46px;top:50%;transform:translateY(-50%) translateX(12px);opacity:0;pointer-events:none;transition:.25s;background:#111;color:#fff;border-radius:14px;padding:14px;width:230px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .demo-tab.open .demo-panel{opacity:1;pointer-events:auto;transform:translateY(-50%)}
+  .demo-panel p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin:0 0 10px}
+  .demo-panel a{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fff;padding:11px 12px;border-radius:9px;font-size:14px;font-weight:600}
+  .demo-panel a:hover{background:#262626}
+  .demo-panel a[aria-current]{background:#fff;color:#111}
+  .demo-panel a small{font-weight:500;opacity:.6;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="cursor" id="cursor"></div>
+<div class="awning" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="../assets/logo.jpg" alt="">Caffe Paradiso</a>
+    <ul class="links">
+      <li><a href="#story">Story</a></li>
+      <li><a href="#ritual">Ritual</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#moments">Moments</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+    <div class="status" id="status"><i></i><span id="statusText">Open · 8am–6pm</span></div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="blob a"></div><div class="blob b"></div>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Espresso bar · Nolita, NYC</span>
+      <h1><span class="line"><span><span id="rot">Dreamers</span></span></span><span class="line"><span><em>welcome.</em></span></span></h1>
+      <p class="lede">A small espresso bar on Elizabeth Street with a green onyx counter and turquoise stripes, from the team behind Dante. Order a cup, then carry it across the street to the garden.</p>
+      <div class="cta">
+        <a class="btn solid mag" href="#menu">See the menu
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="btn ghost mag" href="#visit">202 Elizabeth St</a>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="arch"><img src="../assets/garden.png" alt="The garden bar at Caffe Paradiso with turquoise striped umbrellas"></div>
+      <div class="seal" id="seal" title="Click for a little love">
+        <svg class="ring" viewBox="0 0 170 170" aria-hidden="true">
+          <defs><path id="c" d="M85,85 m-68,0 a68,68 0 1,1 136,0 a68,68 0 1,1 -136,0"/></defs>
+          <text><textPath href="#c">Caffe Paradiso · Dreamers Welcome · NYC ·</textPath></text>
+        </svg>
+        <img src="../assets/logo.jpg" alt="">
+      </div>
+      <div class="sticker">open<b>everyday</b>8am — 6pm</div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="track" data-speed="0.6">
+    <span>Dreamers welcome</span><span>8am–6pm, <em>everyday</em></span><span>202 Elizabeth Street</span><span>Paradiso <em>cream top</em></span><span>Est. 02.14.25</span>
+    <span>Dreamers welcome</span><span>8am–6pm, <em>everyday</em></span><span>202 Elizabeth Street</span><span>Paradiso <em>cream top</em></span><span>Est. 02.14.25</span>
+  </div>
+</div>
+<div class="marquee alt" aria-hidden="true">
+  <div class="track" data-speed="-0.45">
+    <span>For the <em>coffee lovers</em></span><span>who notice the details</span><span>♥ Nolita, NYC</span>
+    <span>For the <em>coffee lovers</em></span><span>who notice the details</span><span>♥ Nolita, NYC</span>
+    <span>For the <em>coffee lovers</em></span><span>who notice the details</span><span>♥ Nolita, NYC</span>
+  </div>
+</div>
+
+<section class="manifesto" id="story">
+  <div class="wrap">
+    <span class="kicker rv">Why “Paradiso”?</span>
+    <p class="big" id="words">After Dante came <em>Paradiso,</em> <span class="pill"><img src="../assets/poster.png" alt=""></span> the final canto, where love moves the sun and the other stars. Here it moves espresso. <span class="pill"><img src="../assets/matcha.png" alt=""></span> For the dreamers who dare to believe, and the coffee lovers <em>who notice the details.</em> <span class="pill"><img src="../assets/sign.png" alt=""></span></p>
+    <div class="sign-off rv">
+      <svg viewBox="0 0 200 180" fill="none" stroke="#16b5b0" stroke-width="7" stroke-linecap="round"><path d="M100 168C62 132 14 104 20 58 26 18 84 14 96 60c3 12-8 18-6 6 2-12 18-12 20 0 2 12-9 6-6-6 12-46 70-42 76-2 6 46-42 74-80 112"/></svg>
+      <span>Est. 02.14.25. From the team behind Dante, Greenwich Village.</span>
+    </div>
+  </div>
+</section>
+
+<section class="ritual" id="ritual">
+  <div class="wrap">
+    <div class="head rv"><h2>The <em>ritual.</em></h2></div>
+    <div class="steps">
+      <div class="step rv"><h3>Order at the onyx bar</h3><p>Pull up to the green stone counter. Choose a shakerato, a cream top, or just let the barista pick.</p></div>
+      <div class="step rv"><h3>Cross Elizabeth Street</h3><p>Seats inside are few and the garden is right across the street, so take your cup with you.</p></div>
+      <div class="step rv"><h3>Sit with the flowers</h3><p>Find a bench in Elizabeth Street Garden, take a sip and let your mind wander.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="wrap">
+    <div class="head rv">
+      <h2>What we<br><em>pour.</em></h2>
+      <div class="tabs" role="tablist">
+        <span class="glide" aria-hidden="true"></span>
+        <button role="tab" aria-selected="true" data-tab="coffee">Coffee</button>
+        <button role="tab" aria-selected="false" data-tab="matcha">Matcha &amp; co.</button>
+        <button role="tab" aria-selected="false" data-tab="bakes">Bakes</button>
+      </div>
+    </div>
+    <div class="menu-grid">
+      <figure class="feature rv">
+        <div class="img"><img id="fImg" src="../assets/sign.png" alt="Featured drink"></div>
+        <figcaption class="cap">
+          <div><small id="fSmall">House signature</small><h3 id="fName">Paradiso Cream Top</h3></div>
+          <span class="tag" id="fTag">Iced</span>
+        </figcaption>
+      </figure>
+      <div>
+        <ul class="list" data-panel="coffee">
+          <li data-img="sign" data-tag="Iced" data-small="House signature"><span class="n">01</span><div><h4>Paradiso Cream Top</h4><p>Iced americano under a thick layer of cream that sinks in as you sip</p></div><span class="price">$7</span></li>
+          <li data-img="garden" data-tag="Iced" data-small="Shaken, not stirred"><span class="n">02</span><div><h4>White Chocolate Shakerato</h4><p>Whipped espresso topped with shaved white chocolate</p></div><span class="price">$8</span></li>
+          <li data-img="poster" data-tag="Hot / Iced" data-small="Guest favourite"><span class="n">03</span><div><h4>Salted Brown Butter Oat Latte</h4><p>Nutty, a little salty and silky smooth</p></div><span class="price">$7.5</span></li>
+          <li data-img="poster" data-tag="Hot" data-small="Old-school"><span class="n">04</span><div><h4>Espresso con Panna</h4><p>Espresso with a spoonful of whipped cream</p></div><span class="price">$5</span></li>
+          <li data-img="sign" data-tag="Hot / Iced" data-small="The classics"><span class="n">05</span><div><h4>Espresso · Americano · Latte</h4><p>Pulled with care, the way it should be</p></div><span class="price">$4–6</span></li>
+        </ul>
+        <ul class="list" data-panel="matcha" hidden>
+          <li data-img="matcha" data-tag="Iced" data-small="Three layers, one sip"><span class="n">01</span><div><h4>Strawberry Matcha</h4><p>Ceremonial matcha over milk and strawberry</p></div><span class="price">$8</span></li>
+          <li data-img="matcha" data-tag="Hot / Iced" data-small="Green & simple"><span class="n">02</span><div><h4>Matcha Latte</h4><p>Lightly sweetened, with your choice of milk</p></div><span class="price">$7</span></li>
+          <li data-img="poster" data-tag="Hot" data-small="For cold mornings"><span class="n">03</span><div><h4>Hot Chocolate</h4><p>Dark, rich, with whipped cream</p></div><span class="price">$6</span></li>
+        </ul>
+        <ul class="list" data-panel="bakes" hidden>
+          <li data-img="poster" data-tag="Baked daily" data-small="“The best I've had”"><span class="n">01</span><div><h4>Banana Bread</h4><p>Thick-cut, moist, made to go with espresso</p></div><span class="price">$5</span></li>
+          <li data-img="garden" data-tag="Baked daily" data-small="Flaky & golden"><span class="n">02</span><div><h4>Croissant</h4><p>Butter layers, crisp edges</p></div><span class="price">$5</span></li>
+          <li data-img="garden" data-tag="Baked daily" data-small="Always a good idea"><span class="n">03</span><div><h4>Chocolate Croissant</h4><p>Two bars of dark chocolate inside</p></div><span class="price">$5.5</span></li>
+        </ul>
+        <p class="note">Drinks come from guest reviews. Prices are illustrative for this demo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="moments">
+  <div class="wrap head rv">
+    <h2>Little<br><em>moments.</em></h2>
+    <p>Stripes, a garden bar and a heart in the steam. These are the details people notice.</p>
+  </div>
+  <div class="strip" id="strip">
+    <figure class="card"><div class="ph"><img src="../assets/sign.png" alt="Turquoise café sign under striped umbrellas"></div><figcaption><b>i.</b> Under the stripes</figcaption></figure>
+    <figure class="card"><div class="ph"><img src="../assets/matcha.png" alt="Layered strawberry matcha drink"></div><figcaption><b>ii.</b> Three layers, one sip</figcaption></figure>
+    <figure class="card quote"><div class="ph"><p>“For the dreamers who dare to believe.”</p><small>— painted on our wall</small></div><figcaption><b>iii.</b> House words</figcaption></figure>
+    <figure class="card"><div class="ph"><img src="../assets/garden.png" alt="Garden bar surrounded by flowers"></div><figcaption><b>iv.</b> The garden bar</figcaption></figure>
+    <figure class="card"><div class="ph"><img src="../assets/poster.png" alt="Hand-lettered Caffe Paradiso poster on white brick"></div><figcaption><b>v.</b> Est. 02.14.25</figcaption></figure>
+  </div>
+  <p class="hint">← drag →</p>
+</section>
+
+<section class="visit" id="visit">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Hours</span>
+      <div class="big-hours" aria-label="8am to 6pm">8<sup>am</sup><span class="dash"><i id="dayBar"></i></span>6<sup>pm</sup></div>
+      <p class="hours-sub">all day, everyday.</p>
+      <p class="day-note" id="dayNote"></p>
+    </div>
+    <div class="info rv">
+      <dl>
+        <div><dt>Find us</dt><dd>202 Elizabeth Street<br>New York, NY 10012<small>Between Prince &amp; Spring, across from Elizabeth Street Garden</small></dd></div>
+        <div><dt>Right now in NYC</dt><dd class="clock"><span id="nyTime">—</span><span id="nyState" style="color:var(--tq-deep)"></span></dd></div>
+        <div><dt>Say hi</dt><dd><a href="https://www.instagram.com/caffeparadiso.nyc/" target="_blank" rel="noopener">@caffeparadiso.nyc</a></dd></div>
+      </dl>
+      <a class="btn solid mag" href="https://maps.google.com/?q=202+Elizabeth+Street,+New+York,+NY+10012" target="_blank" rel="noopener">Get directions
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="awning" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="word" aria-hidden="true"><span>P</span><span>a</span><span>r</span><span>a</span><span>d</span><span>i</span><span>s</span><span>o</span><em>♥</em></div>
+    <div class="foot">
+      <span>© 2026 Caffe Paradiso · 202 Elizabeth St, NYC</span>
+      <span>8am–6pm all day, everyday</span>
+      <a href="https://www.instagram.com/caffeparadiso.nyc/" target="_blank" rel="noopener">Instagram ↗</a>
+    </div>
+  </div>
+  <div class="disclaimer"><b>Demo website only.</b> This site is a demo, and all of its resources will be deleted as soon as the demo is completed.</div>
+</footer>
+
+<div class="demo-tab" id="demoTab">
+  <button type="button" aria-expanded="false" aria-controls="demoPanel">DEMO</button>
+  <div class="demo-panel" id="demoPanel">
+    <p>Choose a design</p>
+    <a href="../modern/" aria-current="page">Modern <small>I</small></a>
+    <a href="../heritage/">Heritage <small>II</small></a>
+  </div>
+</div>
+
+<script>
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine=matchMedia('(pointer: fine)').matches;
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+  // ---- rotating hero word
+  const words=['Dreamers','Romantics','Believers','Wanderers','Poets','Night owls'];
+  const rot=$('#rot');let wi=0;
+  const ease='cubic-bezier(.7,0,.2,1)';
+  if(!reduce) setInterval(()=>{
+    rot.animate([{transform:'none',opacity:1},{transform:'translateY(-110%)',opacity:0}],{duration:450,easing:ease}).onfinish=()=>{
+      wi=(wi+1)%words.length;rot.textContent=words[wi];
+      rot.animate([{transform:'translateY(110%)',opacity:0},{transform:'none',opacity:1}],{duration:500,easing:ease});
+    };
+  },2600);
+
+  // ---- hero mouse parallax
+  const hero=$('.hero');
+  if(fine&&!reduce) hero.addEventListener('mousemove',e=>{
+    const r=hero.getBoundingClientRect();
+    hero.style.setProperty('--mx',((e.clientX-r.left)/r.width-.5)*2);
+    hero.style.setProperty('--my',((e.clientY-r.top)/r.height-.5)*2);
+  });
+
+  // ---- cursor ring
+  const cur=$('#cursor');
+  if(fine&&!reduce){
+    let x=0,y=0,cx=0,cy=0;
+    addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;cur.classList.add('on')});
+    document.addEventListener('mouseleave',()=>cur.classList.remove('on'));
+    (function loop(){cx+=(x-cx)*.18;cy+=(y-cy)*.18;cur.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(loop)})();
+    $$('a,button,.seal,.list li,.step').forEach(el=>{
+      el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+      el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+    });
+  }
+
+  // ---- magnetic buttons
+  if(fine&&!reduce) $$('.mag').forEach(b=>{
+    b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.25}px,${(e.clientY-r.top-r.height/2)*.35}px)`});
+    b.addEventListener('mouseleave',()=>b.style.transform='');
+  });
+
+  // ---- scroll-reactive marquees + progress bar
+  const tracks=$$('.track').map(t=>({el:t,x:0,s:+t.dataset.speed}));
+  let lastY=scrollY,vel=0;
+  function frame(){
+    const y=scrollY;vel+=((y-lastY)-vel)*.1;lastY=y;
+    const boost=1+Math.min(Math.abs(vel)*.35,14), dir=vel<-.5?-1:1;
+    tracks.forEach(t=>{
+      const half=t.el.scrollWidth/2;
+      t.x-=t.s*boost*dir;
+      if(t.x<=-half)t.x+=half; if(t.x>0)t.x-=half;
+      t.el.style.transform=`translateX(${t.x}px)`;
+    });
+    const h=document.documentElement.scrollHeight-innerHeight;
+    $('#progress').style.transform=`scaleX(${h>0?y/h:0})`;
+    requestAnimationFrame(frame);
+  }
+  if(!reduce)requestAnimationFrame(frame);
+
+  // ---- manifesto: words light up as you scroll
+  const wordsEl=$('#words');
+  (function split(node){
+    [...node.childNodes].forEach(n=>{
+      if(n.nodeType===3){
+        const frag=document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(t=>{
+          if(!t)return;
+          if(/^\s+$/.test(t)){frag.appendChild(document.createTextNode(t));return}
+          const s=document.createElement('span');s.className='w';s.textContent=t;frag.appendChild(s);
+        });
+        n.replaceWith(frag);
+      }else if(n.nodeType===1&&!n.classList.contains('pill'))split(n);
+    });
+  })(wordsEl);
+  const lit=[...wordsEl.querySelectorAll('.w,.pill')];
+  function light(){
+    const r=wordsEl.getBoundingClientRect();
+    const p=reduce?1:Math.min(Math.max((innerHeight*.85-r.top)/(r.height+innerHeight*.35),0),1);
+    const n=Math.round(p*lit.length);
+    lit.forEach((w,i)=>w.classList.toggle('on',i<n));
+  }
+  addEventListener('scroll',light,{passive:true});light();
+
+  // ---- ritual cards: fill from the pointer position
+  $$('.step').forEach(s=>s.addEventListener('mousemove',e=>{const r=s.getBoundingClientRect();s.style.setProperty('--x',e.clientX-r.left+'px');s.style.setProperty('--y',e.clientY-r.top+'px')}));
+
+  // ---- menu tabs with gliding pill + live feature card
+  const glide=$('.tabs .glide');
+  function moveGlide(b){glide.style.left=b.offsetLeft+'px';glide.style.width=b.offsetWidth+'px'}
+  $$('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+    $$('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+    $$('.list').forEach(l=>l.hidden=l.dataset.panel!==b.dataset.tab);
+    moveGlide(b);
+    const first=$(`.list[data-panel="${b.dataset.tab}"] li`);if(first)feature(first);
+  }));
+  addEventListener('load',()=>moveGlide($('.tabs button[aria-selected="true"]')));
+  addEventListener('resize',()=>moveGlide($('.tabs button[aria-selected="true"]')));
+  // place the pill instantly the first time, then let it glide
+  glide.style.transition='none';moveGlide($('.tabs button[aria-selected="true"]'));
+  glide.offsetWidth;glide.style.transition='';
+  document.fonts&&document.fonts.ready.then(()=>moveGlide($('.tabs button[aria-selected="true"]')));
+  const fImg=$('#fImg'),fName=$('#fName');let current='';
+  function feature(li){
+    const name=li.querySelector('h4').textContent;if(name===current)return;current=name;
+    fImg.classList.add('fade');fName.classList.add('fade');
+    setTimeout(()=>{
+      fImg.src=`../assets/${li.dataset.img}.png`;fName.textContent=name;
+      $('#fTag').textContent=li.dataset.tag;$('#fSmall').textContent=li.dataset.small;
+      fImg.classList.remove('fade');fName.classList.remove('fade');
+    },280);
+  }
+  $$('.list li').forEach(li=>li.addEventListener('mouseenter',()=>feature(li)));
+
+  // ---- gallery: drag to scroll + tilt
+  const strip=$('#strip');let down=false,sx=0,sl=0;
+  strip.addEventListener('pointerdown',e=>{down=true;sx=e.clientX;sl=strip.scrollLeft;strip.classList.add('drag')});
+  addEventListener('pointerup',()=>{down=false;strip.classList.remove('drag')});
+  strip.addEventListener('pointermove',e=>{if(down)strip.scrollLeft=sl-(e.clientX-sx)});
+  if(fine&&!reduce) $$('.card').forEach(c=>{
+    c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--ry',((e.clientX-r.left)/r.width-.5)*16+'deg');c.style.setProperty('--rx',((e.clientY-r.top)/r.height-.5)*-16+'deg')});
+    c.addEventListener('mouseleave',()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')});
+  });
+
+  // ---- heart burst on the seal (and anywhere quiet)
+  function burst(x,y,n=10){
+    if(reduce)return;
+    for(let i=0;i<n;i++){
+      const h=document.createElement('span');h.className='pop';h.textContent='♥';
+      h.style.left=x+'px';h.style.top=y+'px';h.style.color=['#16b5b0','#e2343f','#14213d'][i%3];
+      document.body.appendChild(h);
+      const a=Math.random()*Math.PI*2,d=50+Math.random()*90;
+      h.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:1},{transform:`translate(calc(-50% + ${Math.cos(a)*d}px),calc(-50% + ${Math.sin(a)*d-40}px)) scale(${.8+Math.random()}) rotate(${Math.random()*60-30}deg)`,opacity:0}],{duration:900+Math.random()*500,easing:'cubic-bezier(.2,.8,.1,1)'}).onfinish=()=>h.remove();
+    }
+  }
+  $('#seal').addEventListener('click',e=>burst(e.clientX,e.clientY,16));
+  document.addEventListener('click',e=>{if(!e.target.closest('a,button,.seal,.strip,.demo-tab'))burst(e.clientX,e.clientY,6)});
+
+  // ---- reveal on scroll
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+  $$('.rv').forEach(el=>io.observe(el));
+
+  // ---- active nav link
+  const secs=$$('section[id]');
+  const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('.links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(s=>nio.observe(s));
+
+  // ---- live NYC open/closed + day progress
+  function tick(){
+    const now=new Date();
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:false}).formatToParts(now);
+    const h=+parts.find(p=>p.type==='hour').value%24, m=+parts.find(p=>p.type==='minute').value;
+    const mins=h*60+m, open=mins>=480&&mins<1080;
+    const t=now.toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit'});
+    $('#status').classList.toggle('closed',!open);
+    $('#statusText').textContent=open?'Open now · until 6pm':'Closed · opens 8am';
+    $('#nyTime').textContent=t;
+    $('#nyState').textContent=open?'· we’re open':'· back at 8am';
+    const day=Math.min(Math.max((mins-480)/600,0),1);
+    $('#dayBar').parentElement.style.setProperty('--day',day);
+    $('#dayNote').textContent=open?`${Math.round(day*100)}% through today's pour. ${Math.floor((1080-mins)/60)}h ${(1080-mins)%60}m left to visit.`:'The bar is resting. Espresso returns at 8am.';
+  }
+  tick();setInterval(tick,30000);
+
+  // ---- demo switcher
+  const dt=$('#demoTab'),db=dt.querySelector('button');
+  db.addEventListener('click',()=>{const o=dt.classList.toggle('open');db.setAttribute('aria-expanded',o)});
+  document.addEventListener('click',e=>{if(!dt.contains(e.target)){dt.classList.remove('open');db.setAttribute('aria-expanded',false)}});
+</script>
+</body>
+</html>
